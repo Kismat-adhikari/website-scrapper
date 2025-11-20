@@ -57,15 +57,15 @@ class AsyncWebsiteScraper:
         page = await self.browser.new_page()
         
         try:
-            # Load page with longer timeout
-            await page.goto(url, wait_until='domcontentloaded', timeout=45000)
+            # Load page faster - reduced timeout
+            await page.goto(url, wait_until='domcontentloaded', timeout=15000)
             
-            # Wait for page to stabilize
-            await page.wait_for_timeout(3000)
+            # Quick wait for dynamic content
+            await page.wait_for_timeout(1000)
             
             # Scroll to load lazy content
             await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
-            await page.wait_for_timeout(1000)
+            await page.wait_for_timeout(500)
             
             # Extract data
             title = await page.title()

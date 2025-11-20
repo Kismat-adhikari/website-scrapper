@@ -105,7 +105,7 @@ class ApifyWebsiteScraper:
     
     async def scrape_bulk_urls(self, urls: List[str]) -> List[Dict]:
         """
-        Scrape multiple URLs with progress tracking.
+        Scrape multiple URLs with progress tracking and parallel processing.
         
         Args:
             urls: List of URLs to scrape
@@ -113,9 +113,14 @@ class ApifyWebsiteScraper:
         Returns:
             List of scraped data dictionaries
         """
+        import asyncio
+        
         self.total_count = len(urls)
         logger.info(f"🚀 Starting bulk scrape: {self.total_count} URLs")
-        logger.info(f"⚙️  Max Concurrency: {self.config.get('maxConcurrency', 10)}")
+        
+        # Get concurrency setting (default 5 for parallel processing)
+        max_concurrent = min(self.config.get('maxConcurrency', 5), 10)  # Cap at 10
+        logger.info(f"⚙️  Parallel Processing: {max_concurrent} URLs at once")
         
         # Only use proxy if explicitly requested (auto-enable disabled for now)
         use_proxy = self.config.get('useProxy', False)
@@ -134,11 +139,22 @@ class ApifyWebsiteScraper:
         await scraper.start()
         
         try:
-            # Process URLs sequentially
-            for url in urls:
-                result = await self.scrape_single_url(url, scraper)
-                
-                if result:
+            # Process URLs in parallel batches
+            semaphore = asyncio.Semaphore(max_concurrent)
+            
+            async def scrape_with_semaphore(url):
+                async with semaphore:
+                    return await self.scrape_single_url(url, scraper)
+            
+            # Create tasks for all URLs
+            tasks = [scrape_with_semaphore(url) for url in urls]
+            
+            # Process in parallel
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            
+            # Save results
+            for result in results:
+                if result and not isinstance(result, Exception):
                     # Check confidence threshold
                     min_confidence = self.config.get('minConfidenceScore', 0.0)
                     if result['confidence_score'] >= min_confidence:
@@ -147,10 +163,6 @@ class ApifyWebsiteScraper:
                         # Save to Apify dataset incrementally
                         if APIFY_MODE:
                             await Actor.push_data(result)
-                
-                # Save progress every 10 URLs
-                if self.processed_count % 10 == 0:
-                    await self.save_progress()
             
         finally:
             # Cleanup
