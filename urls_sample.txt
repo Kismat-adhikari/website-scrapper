@@ -1,0 +1,138 @@
+# Sample URLs for bulk scraping
+# Lines starting with # are ignored
+
+# Tech Companies
+https://www.apple.com/
+https://www.microsoft.com/
+https://www.google.com/
+https://www.amazon.com/
+https://www.meta.com/
+https://www.netflix.com/
+https://www.adobe.com/
+https://www.salesforce.com/
+https://www.oracle.com/
+https://www.ibm.com/
+
+# E-commerce & Retail
+https://www.walmart.com/
+https://www.target.com/
+https://www.bestbuy.com/
+https://www.ebay.com/
+https://www.etsy.com/
+https://www.wayfair.com/
+https://www.homedepot.com/
+https://www.lowes.com/
+
+# Fashion & Apparel
+https://www.nike.com/
+https://www.adidas.com/
+https://www.zara.com/
+https://www.hm.com/
+https://www.gap.com/
+https://www.uniqlo.com/
+https://www.lululemon.com/
+
+# Food & Beverage
+https://www.mcdonalds.com/
+https://www.starbucks.com/
+https://www.subway.com/
+https://www.dominos.com/
+https://www.pizzahut.com/
+https://www.chipotle.com/
+https://www.wendys.com/
+
+# Automotive
+https://www.tesla.com/
+https://www.ford.com/
+https://www.toyota.com/
+https://www.bmw.com/
+https://www.mercedes-benz.com/
+https://www.honda.com/
+https://www.chevrolet.com/
+
+# Travel & Hospitality
+https://www.airbnb.com/
+https://www.booking.com/
+https://www.expedia.com/
+https://www.marriott.com/
+https://www.hilton.com/
+https://www.delta.com/
+https://www.united.com/
+
+# Entertainment & Media
+https://www.spotify.com/
+https://www.hulu.com/
+https://www.disney.com/
+https://www.hbo.com/
+https://www.paramount.com/
+https://www.twitch.tv/
+https://www.youtube.com/
+
+# News & Media
+https://www.cnn.com/
+https://www.bbc.com/
+https://www.nytimes.com/
+https://www.wsj.com/
+https://www.reuters.com/
+https://www.forbes.com/
+https://www.bloomberg.com/
+
+# Social Media
+https://www.facebook.com/
+https://www.instagram.com/
+https://www.twitter.com/
+https://www.linkedin.com/
+https://www.tiktok.com/
+https://www.reddit.com/
+https://www.pinterest.com/
+
+# Finance & Banking
+https://www.chase.com/
+https://www.bankofamerica.com/
+https://www.wellsfargo.com/
+https://www.paypal.com/
+https://www.venmo.com/
+https://www.coinbase.com/
+https://www.robinhood.com/
+
+# Education
+https://www.coursera.org/
+https://www.udemy.com/
+https://www.khanacademy.org/
+https://www.edx.org/
+https://www.duolingo.com/
+https://www.skillshare.com/
+
+# Health & Fitness
+https://www.cvs.com/
+https://www.walgreens.com/
+https://www.webmd.com/
+https://www.mayoclinic.org/
+https://www.peloton.com/
+https://www.fitbit.com/
+
+# Software & SaaS
+https://www.slack.com/
+https://www.zoom.us/
+https://www.dropbox.com/
+https://www.notion.so/
+https://www.asana.com/
+https://www.trello.com/
+https://www.monday.com/
+
+# Gaming
+https://www.ea.com/
+https://www.activision.com/
+https://www.nintendo.com/
+https://www.playstation.com/
+https://www.xbox.com/
+https://www.epicgames.com/
+https://www.roblox.com/
+
+# Real Estate
+https://www.zillow.com/
+https://www.redfin.com/
+https://www.realtor.com/
+https://www.trulia.com/
+
+# Add your own URLs below (one per line)

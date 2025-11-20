@@ -1,0 +1,96 @@
+================================================================================
+EMAIL DISCOVERY VERIFICATION REPORT
+================================================================================
+URL: https://example.com
+Start Time: 2025-11-20 06:29:11
+End Time: 2025-11-20 06:29:11
+Duration: 0.00 seconds
+
+================================================================================
+OVERALL STATUS
+================================================================================
+Status: INCOMPLETE: Some checks were not completed
+
+================================================================================
+1. WEBSITE SCAN VERIFICATION
+================================================================================
+✓ Homepage Scanned: YES
+✓ Internal Links (Depth 2) Checked: YES
+  - Links Found: 2
+
+Target Pages:
+  ✓ homepage: CHECKED
+  ✓ contact: CHECKED
+  ✓ about: CHECKED
+  ✓ support: CHECKED
+  ✗ help: NOT CHECKED
+  ✗ legal: NOT CHECKED
+  ✗ team: NOT CHECKED
+  ✗ privacy: NOT CHECKED
+  ✗ terms: NOT CHECKED
+
+================================================================================
+2. DATA SOURCES VERIFICATION
+================================================================================
+  ✓ visible_text: CHECKED (1 emails found)
+  ✗ dom_text: NOT CHECKED
+  ✗ inline_javascript: NOT CHECKED
+  ✓ meta_tags: CHECKED
+  ✗ schema_org_jsonld: NOT CHECKED
+  ✓ mailto_links: CHECKED (2 emails found)
+  ✓ contact_forms: CHECKED
+  ✗ social_links: NOT CHECKED
+
+================================================================================
+3. RESULTS VERIFICATION
+================================================================================
+✓ Emails Found: 2
+✓ Emails Cleaned/Formatted: YES
+  Found Emails:
+    - contact@example.com
+    - support@example.com
+
+================================================================================
+4. FAILURES TRACKED
+================================================================================
+  ✗ page_scan: support
+    Reason: page_blocked
+    URL: https://example.com/support
+
+================================================================================
+5. INCOMPLETE STEPS
+================================================================================
+  ⚠ Page 'help' not scanned
+  ⚠ Page 'legal' not scanned
+  ⚠ Page 'team' not scanned
+  ⚠ Page 'privacy' not scanned
+  ⚠ Page 'terms' not scanned
+  ⚠ Data source 'dom_text' not checked
+  ⚠ Data source 'inline_javascript' not checked
+  ⚠ Data source 'schema_org_jsonld' not checked
+  ⚠ Data source 'social_links' not checked
+
+================================================================================
+6. DIAGNOSTICS
+================================================================================
+Total Pages Scanned: 4
+Total Data Sources Checked: 4
+Total Emails Found: 2
+Total Failures: 1
+Slow Operations: 0
+
+Repeated Failures:
+  - support_page_blocked: 1 times
+
+Recommendations:
+  → Retry incomplete steps: Page 'help' not scanned, Page 'legal' not scanned, Page 'team' not scanned
+
+================================================================================
+FINAL SUMMARY
+================================================================================
+Status: INCOMPLETE: Some checks were not completed
+Emails Found: 2
+Pages Scanned: 4/9
+Data Sources Checked: 4/8
+Failures: 1
+================================================================================
