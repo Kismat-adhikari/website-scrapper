@@ -3,10 +3,10 @@
     "https://example.com",
     "https://httpbin.org/html"
   ],
-  "maxConcurrency": 5,
+  "maxConcurrency": 20,
   "depth": 2,
-  "timeout": 30,
-  "retryAttempts": 3,
+  "timeout": 15,
+  "retryAttempts": 2,
   "useProxy": false,
   "minConfidenceScore": 0.0,
   "extractEmails": true,

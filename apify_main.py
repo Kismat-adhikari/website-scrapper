@@ -118,8 +118,8 @@ class ApifyWebsiteScraper:
         self.total_count = len(urls)
         logger.info(f"🚀 Starting bulk scrape: {self.total_count} URLs")
         
-        # Get concurrency setting (default 5 for parallel processing)
-        max_concurrent = min(self.config.get('maxConcurrency', 5), 10)  # Cap at 10
+        # Get concurrency setting (default 20 for FAST parallel processing)
+        max_concurrent = min(self.config.get('maxConcurrency', 20), 30)  # Cap at 30
         logger.info(f"⚙️  Parallel Processing: {max_concurrent} URLs at once")
         
         # Only use proxy if explicitly requested (auto-enable disabled for now)
