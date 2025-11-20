@@ -8,11 +8,9 @@
       "type": "array",
       "description": "List of website URLs to scrape. Can be homepages or specific pages. Enter one URL per line.",
       "editor": "stringList",
-      "placeholderValue": "https://example.com",
-      "example": [
-        "https://example.com",
-        "https://another-site.com"
-      ]
+      "items": {
+        "type": "string"
+      }
     },
     "maxConcurrency": {
       "title": "Max Concurrency",
