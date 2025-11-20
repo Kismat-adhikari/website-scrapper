@@ -20,14 +20,8 @@ except ImportError:
     print("⚠️  Running in LOCAL mode (Apify SDK not installed)")
     print("   Install with: pip install apify")
 
-# Import your existing scraper components
-from scraper import (
-    BrowserManager, extract_emails, extract_phones, extract_address,
-    extract_social_links, extract_metadata, extract_title,
-    infer_industry, detect_contact_form, calculate_word_count,
-    detect_blog, detect_products_services, clean_text, normalize_data,
-    apply_defaults, generate_timestamp
-)
+# Import async scraper for Apify
+from apify_scraper_async import AsyncWebsiteScraper
 
 # Configure logging
 logging.basicConfig(
@@ -52,13 +46,13 @@ class ApifyWebsiteScraper:
         self.total_count = 0
         self.start_time = datetime.now()
         
-    async def scrape_single_url(self, url: str, browser_manager) -> Optional[Dict]:
+    async def scrape_single_url(self, url: str, scraper: AsyncWebsiteScraper) -> Optional[Dict]:
         """
-        Scrape a single URL using your existing scraper logic.
+        Scrape a single URL using async scraper.
         
         Args:
             url: URL to scrape
-            browser_manager: Shared browser manager instance
+            scraper: Async scraper instance
             
         Returns:
             Dict with scraped data or None if failed
@@ -66,87 +60,13 @@ class ApifyWebsiteScraper:
         logger.info(f"[{self.processed_count + 1}/{self.total_count}] Scraping: {url}")
         
         try:
-            # Load page (run sync code in executor)
-            import asyncio
-            loop = asyncio.get_event_loop()
-            success = await loop.run_in_executor(None, browser_manager.load_page, url)
-            if not success:
-                raise Exception("Failed to load page")
-            
-            # Scroll to load dynamic content
-            await loop.run_in_executor(None, browser_manager.scroll_to_bottom)
-            
-            # Extract all data using your existing functions
-            page = browser_manager.page
-            
-            # Basic data
-            extracted_url = url
-            title = extract_title(page)
-            metadata = extract_metadata(page)
-            
-            # Contact data
-            emails = extract_emails(page)
-            phones = extract_phones(page)
-            address_data = extract_address(page)
-            social_links = extract_social_links(page)
-            
-            # Page features
-            industry = infer_industry(page)
-            contact_form = detect_contact_form(page)
-            word_count = calculate_word_count(page)
-            blog_present = detect_blog(page)
-            products_or_services = detect_products_services(page)
-            
-            # Clean and normalize data
-            emails = clean_text(normalize_data(emails))
-            phones = clean_text(phones)
-            social_links = clean_text(normalize_data(social_links))
-            emails, phones = apply_defaults(emails, phones)
-            
-            # Format address
-            address_str = address_data.get('full', '')
-            if not address_str and address_data.get('country'):
-                address_str = address_data.get('country', '')
-            
-            # Calculate metrics
-            email_count = len(emails) if isinstance(emails, list) else 0
-            phone_count = len(phones) if isinstance(phones, list) else 0
-            social_count = len(social_links) if isinstance(social_links, list) else 0
-            
-            # Calculate confidence score
-            confidence_score = self.calculate_confidence(
-                email_count, phone_count, social_count, contact_form
-            )
-            
-            # Build result
-            result = {
-                'url': extracted_url,
-                'title': title,
-                'emails': emails if isinstance(emails, list) else [],
-                'phones': phones if isinstance(phones, list) else [],
-                'address': address_str,
-                'social_links': social_links if isinstance(social_links, list) else [],
-                'meta_description': metadata.get('meta_description', ''),
-                'og_title': metadata.get('og_title', ''),
-                'og_description': metadata.get('og_description', ''),
-                'contact_form': contact_form,
-                'industry': industry,
-                'blog_present': blog_present,
-                'products_or_services': products_or_services,
-                'word_count': word_count,
-                'email_count': email_count,
-                'phone_count': phone_count,
-                'social_count': social_count,
-                'confidence_score': confidence_score,
-                'scrape_timestamp': generate_timestamp(),
-                'scrape_method': 'browser'
-            }
+            result = await scraper.scrape_url(url)
             
             self.processed_count += 1
             
             # Log progress
             progress = (self.processed_count / self.total_count) * 100
-            logger.info(f"✓ Success | Progress: {progress:.1f}% | Emails: {email_count} | Phones: {phone_count}")
+            logger.info(f"✓ Success | Progress: {progress:.1f}% | Emails: {result['email_count']} | Phones: {result['phone_count']}")
             
             return result
             
@@ -197,17 +117,14 @@ class ApifyWebsiteScraper:
         logger.info(f"🚀 Starting bulk scrape: {self.total_count} URLs")
         logger.info(f"⚙️  Max Concurrency: {self.config.get('maxConcurrency', 10)}")
         
-        # Initialize browser manager (reuse for all URLs)
-        import asyncio
-        loop = asyncio.get_event_loop()
-        browser_manager = BrowserManager()
-        await loop.run_in_executor(None, browser_manager.launch_browser)
+        # Initialize async scraper
+        scraper = AsyncWebsiteScraper()
+        await scraper.start()
         
         try:
-            # Process URLs sequentially (browser manager handles one at a time)
-            # For true parallel processing, we'd need multiple browser instances
+            # Process URLs sequentially
             for url in urls:
-                result = await self.scrape_single_url(url, browser_manager)
+                result = await self.scrape_single_url(url, scraper)
                 
                 if result:
                     # Check confidence threshold
@@ -225,9 +142,7 @@ class ApifyWebsiteScraper:
             
         finally:
             # Cleanup
-            import asyncio
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, browser_manager.close_browser)
+            await scraper.close()
         
         return self.results
     
