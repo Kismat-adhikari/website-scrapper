@@ -52,7 +52,7 @@ class ApifyWebsiteScraper:
         self.total_count = 0
         self.start_time = datetime.now()
         
-    async def scrape_single_url(self, url: str, browser_manager: BrowserManager) -> Optional[Dict]:
+    async def scrape_single_url(self, url: str, browser_manager) -> Optional[Dict]:
         """
         Scrape a single URL using your existing scraper logic.
         
@@ -66,13 +66,15 @@ class ApifyWebsiteScraper:
         logger.info(f"[{self.processed_count + 1}/{self.total_count}] Scraping: {url}")
         
         try:
-            # Load page
-            success = browser_manager.load_page(url)
+            # Load page (run sync code in executor)
+            import asyncio
+            loop = asyncio.get_event_loop()
+            success = await loop.run_in_executor(None, browser_manager.load_page, url)
             if not success:
                 raise Exception("Failed to load page")
             
             # Scroll to load dynamic content
-            browser_manager.scroll_to_bottom()
+            await loop.run_in_executor(None, browser_manager.scroll_to_bottom)
             
             # Extract all data using your existing functions
             page = browser_manager.page
@@ -196,8 +198,10 @@ class ApifyWebsiteScraper:
         logger.info(f"⚙️  Max Concurrency: {self.config.get('maxConcurrency', 10)}")
         
         # Initialize browser manager (reuse for all URLs)
+        import asyncio
+        loop = asyncio.get_event_loop()
         browser_manager = BrowserManager()
-        browser_manager.launch_browser()
+        await loop.run_in_executor(None, browser_manager.launch_browser)
         
         try:
             # Process URLs sequentially (browser manager handles one at a time)
@@ -221,7 +225,9 @@ class ApifyWebsiteScraper:
             
         finally:
             # Cleanup
-            browser_manager.close_browser()
+            import asyncio
+            loop = asyncio.get_event_loop()
+            await loop.run_in_executor(None, browser_manager.close_browser)
         
         return self.results
     

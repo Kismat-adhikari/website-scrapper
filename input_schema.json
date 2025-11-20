@@ -6,10 +6,11 @@
     "urls": {
       "title": "URLs to Scrape",
       "type": "array",
-      "description": "List of website URLs to scrape. Can be homepages or specific pages. Enter one URL per line.",
+      "description": "List of website URLs to scrape. Enter one URL per line.",
       "editor": "stringList",
       "items": {
-        "type": "string"
+        "type": "string",
+        "editor": "textfield"
       }
     },
     "maxConcurrency": {
