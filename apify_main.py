@@ -117,22 +117,17 @@ class ApifyWebsiteScraper:
         logger.info(f"🚀 Starting bulk scrape: {self.total_count} URLs")
         logger.info(f"⚙️  Max Concurrency: {self.config.get('maxConcurrency', 10)}")
         
-        # Auto-enable proxy for large jobs (50+ URLs) or if explicitly requested
+        # Only use proxy if explicitly requested (auto-enable disabled for now)
         use_proxy = self.config.get('useProxy', False)
-        if not use_proxy and self.total_count >= 50:
-            use_proxy = True
-            logger.info(f"🔒 Auto-enabling proxy for {self.total_count} URLs (recommended for 50+ URLs)")
         
         # Configure Apify proxy if enabled
         proxy_config = None
         if use_proxy and APIFY_MODE:
-            # Use Apify's proxy
-            proxy_config = {
-                'server': 'http://proxy.apify.com:8000',
-                'username': 'auto',
-                'password': 'apify_proxy'
-            }
-            logger.info("🔒 Using Apify proxy for better reliability")
+            # Use Apify's proxy (requires Apify proxy subscription)
+            # Note: This requires valid Apify proxy credentials
+            logger.warning("⚠️  Proxy requested but not configured. Set up Apify proxy in your account.")
+            logger.info("ℹ️  Running without proxy for now...")
+            use_proxy = False  # Disable until properly configured
         
         # Initialize async scraper
         scraper = AsyncWebsiteScraper(use_proxy=use_proxy, proxy_config=proxy_config)
