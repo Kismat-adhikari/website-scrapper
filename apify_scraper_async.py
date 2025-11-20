@@ -15,17 +15,27 @@ logger = logging.getLogger(__name__)
 class AsyncWebsiteScraper:
     """Async scraper using Playwright async API"""
     
-    def __init__(self):
+    def __init__(self, use_proxy: bool = False, proxy_config: Optional[Dict] = None):
         self.browser: Optional[Browser] = None
         self.playwright = None
+        self.use_proxy = use_proxy
+        self.proxy_config = proxy_config
         
     async def start(self):
         """Initialize async Playwright"""
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(
-            headless=True,
-            args=['--no-sandbox', '--disable-setuid-sandbox']
-        )
+        
+        launch_args = {
+            'headless': True,
+            'args': ['--no-sandbox', '--disable-setuid-sandbox']
+        }
+        
+        # Add proxy if configured
+        if self.use_proxy and self.proxy_config:
+            launch_args['proxy'] = self.proxy_config
+            logger.info(f"🔒 Using proxy: {self.proxy_config.get('server', 'configured')}")
+        
+        self.browser = await self.playwright.chromium.launch(**launch_args)
         
     async def close(self):
         """Cleanup resources"""
