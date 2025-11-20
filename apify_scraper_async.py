@@ -57,31 +57,50 @@ class AsyncWebsiteScraper:
         page = await self.browser.new_page()
         
         try:
-            # Load page
-            await page.goto(url, wait_until='networkidle', timeout=30000)
-            await page.wait_for_timeout(2000)  # Wait for dynamic content
+            # Load page with longer timeout
+            await page.goto(url, wait_until='domcontentloaded', timeout=45000)
+            
+            # Wait for page to stabilize
+            await page.wait_for_timeout(3000)
+            
+            # Scroll to load lazy content
+            await page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+            await page.wait_for_timeout(1000)
             
             # Extract data
             title = await page.title()
             content = await page.content()
             
+            # Also get visible text for better extraction
+            try:
+                visible_text = await page.evaluate('document.body.innerText')
+                # Combine HTML and visible text for better extraction
+                full_content = content + '\n' + visible_text
+            except:
+                full_content = content
+            
             # Extract emails
-            emails = self._extract_emails(content)
+            emails = self._extract_emails(full_content)
             
             # Extract phones
-            phones = self._extract_phones(content)
+            phones = self._extract_phones(full_content)
             
             # Extract social links
             social_links = await self._extract_social_links(page)
             
             # Extract address
-            address = self._extract_address(content)
+            address = self._extract_address(full_content)
             
             # Extract metadata
-            meta_desc = await page.locator('meta[name="description"]').get_attribute('content') or ''
+            try:
+                meta_desc = await page.locator('meta[name="description"]').get_attribute('content', timeout=5000) or ''
+            except:
+                meta_desc = ''
             
             # Calculate confidence
             confidence = self._calculate_confidence(emails, phones, social_links)
+            
+            logger.info(f"✓ {url}: {len(emails)} emails, {len(phones)} phones, {len(social_links)} socials")
             
             return {
                 'url': url,
@@ -124,9 +143,24 @@ class AsyncWebsiteScraper:
         """Extract email addresses from content"""
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
         emails = list(set(re.findall(email_pattern, content)))
-        # Filter out common false positives
-        emails = [e for e in emails if not any(x in e.lower() for x in ['example.com', 'test.com', 'domain.com'])]
-        return emails[:10]  # Limit to 10
+        
+        # Filter out common false positives and invalid emails
+        filtered = []
+        for email in emails:
+            email_lower = email.lower()
+            # Skip common false positives
+            if any(x in email_lower for x in ['example.com', 'test.com', 'domain.com', 'sentry.io', 
+                                               'schema.org', 'w3.org', 'example.org']):
+                continue
+            # Skip emails with weird patterns
+            if email.count('@') != 1:
+                continue
+            # Skip very short or very long emails
+            if len(email) < 6 or len(email) > 100:
+                continue
+            filtered.append(email)
+        
+        return filtered[:10]  # Limit to 10
     
     def _extract_phones(self, content: str) -> List[str]:
         """Extract phone numbers from content"""
