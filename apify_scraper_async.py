@@ -148,16 +148,33 @@ class AsyncWebsiteScraper:
         filtered = []
         for email in emails:
             email_lower = email.lower()
+            
+            # Skip image files (major false positive source)
+            if any(ext in email_lower for ext in ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.ico', '.bmp', '.tiff']):
+                continue
+            
             # Skip common false positives
             if any(x in email_lower for x in ['example.com', 'test.com', 'domain.com', 'sentry.io', 
-                                               'schema.org', 'w3.org', 'example.org']):
+                                               'schema.org', 'w3.org', 'example.org', 'placeholder',
+                                               'yourname', 'youremail', 'noreply@', 'no-reply@']):
                 continue
+            
             # Skip emails with weird patterns
             if email.count('@') != 1:
                 continue
+            
             # Skip very short or very long emails
             if len(email) < 6 or len(email) > 100:
                 continue
+            
+            # Must have valid TLD (top level domain)
+            if not re.search(r'\.(com|org|net|edu|gov|mil|co|io|ai|dev|app|tech|info|biz)$', email_lower):
+                continue
+            
+            # Skip if it looks like a file path or URL parameter
+            if '/' in email or '\\' in email or '?' in email or '&' in email:
+                continue
+            
             filtered.append(email)
         
         return filtered[:10]  # Limit to 10
@@ -174,8 +191,38 @@ class AsyncWebsiteScraper:
             for match in matches:
                 if isinstance(match, tuple):
                     phone = ''.join(match)
-                    if len(phone) >= 10:
-                        phones.append(phone)
+                    
+                    # Only accept phones between 10-11 digits (standard phone length)
+                    if len(phone) < 10 or len(phone) > 11:
+                        continue
+                    
+                    # Skip if it looks like a timestamp (starts with 16 or 17 = year 2016/2017)
+                    if phone.startswith('16') or phone.startswith('17') or phone.startswith('20'):
+                        continue
+                    
+                    # Skip if all digits are the same (like 1111111111)
+                    if len(set(phone)) == 1:
+                        continue
+                    
+                    # Skip if too many repeating digits (more than 4 of the same digit in a row)
+                    if any(str(i)*5 in phone for i in range(10)):
+                        continue
+                    
+                    # Skip if it looks like an ID (too many repeating patterns)
+                    if phone.count('0000') > 0 or phone.count('1111') > 0 or phone.count('9999') > 0:
+                        continue
+                    
+                    # Skip obvious fake patterns
+                    if phone.count('666666') > 0 or phone.count('777777') > 0 or phone.count('888888') > 0:
+                        continue
+                    
+                    # Skip if more than 60% of digits are the same
+                    most_common_digit = max(phone.count(str(i)) for i in range(10))
+                    if most_common_digit > len(phone) * 0.6:
+                        continue
+                    
+                    phones.append(phone)
+        
         return list(set(phones))[:10]  # Limit to 10
     
     async def _extract_social_links(self, page: Page) -> List[str]:

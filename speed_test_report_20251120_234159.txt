@@ -1,0 +1,18 @@
+SPEED TEST REPORT
+======================================================================
+
+Test Date: 2025-11-20 23:40:42
+Configuration: 20 concurrent URLs
+Timeout: 8 seconds per page
+Wait times: 0.5 seconds total per page
+
+Total URLs: 110
+Total Time: 76.9 seconds (1.28 minutes)
+Speed: 1.4 URLs per minute
+Average: 0.70 seconds per URL
+
+Results:
+- Emails found: 35
+- Phones found: 137
+- Social links: 96
+- Successful scrapes: 39/110
