@@ -412,11 +412,11 @@ class BrowserManager:
                 'button:has-text("Allow all")',
                 '#accept-cookies',
                 '.cookie-accept',
-                // Age verification
+                # Age verification
                 'button:has-text("Yes")',
                 'button:has-text("I am 18+")',
                 'button:has-text("Enter")',
-                // X buttons
+                # X buttons
                 'button.close',
                 'button[aria-label*="close" i]',
                 '[class*="close-icon"]',

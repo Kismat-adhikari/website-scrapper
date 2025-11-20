@@ -1,0 +1,60 @@
+{
+  "actorSpecification": 1,
+  "name": "website-email-scraper",
+  "title": "Website & Email Scraper - Professional Data Extraction",
+  "description": "Fast and accurate website scraper that extracts emails, phone numbers, addresses, and social media links. Handles 1-10,000+ URLs with automatic retry, resume capability, and verification. Perfect for lead generation and contact discovery.",
+  "version": "1.0.0",
+  "meta": {
+    "templateId": "python-playwright"
+  },
+  "input": "./input_schema.json",
+  "dockerfile": "./Dockerfile",
+  "readme": "./README.md",
+  "categories": [
+    "BUSINESS",
+    "ECOMMERCE",
+    "LEAD_GENERATION"
+  ],
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "title": "Scraped Data",
+      "description": "Contains all extracted data including emails, phones, addresses, and social media links",
+      "views": {
+        "overview": {
+          "title": "Overview",
+          "transformation": {
+            "fields": [
+              "url",
+              "title",
+              "emails",
+              "phones",
+              "address",
+              "social_links",
+              "confidence_score"
+            ]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "url": {
+                "label": "URL",
+                "format": "link"
+              },
+              "emails": {
+                "label": "Emails Found"
+              },
+              "phones": {
+                "label": "Phone Numbers"
+              },
+              "confidence_score": {
+                "label": "Confidence",
+                "format": "percentage"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

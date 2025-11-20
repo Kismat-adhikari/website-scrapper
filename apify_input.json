@@ -1,0 +1,18 @@
+{
+  "urls": [
+    "https://example.com",
+    "https://httpbin.org/html"
+  ],
+  "maxConcurrency": 5,
+  "depth": 2,
+  "timeout": 30,
+  "retryAttempts": 3,
+  "useProxy": false,
+  "minConfidenceScore": 0.0,
+  "extractEmails": true,
+  "extractPhones": true,
+  "extractAddresses": true,
+  "extractSocials": true,
+  "extractMetadata": true,
+  "verificationEnabled": true
+}

@@ -1,0 +1,13 @@
+# Apify SDK
+apify>=1.6.0
+
+# Web scraping
+playwright>=1.40.0
+beautifulsoup4>=4.12.0
+aiohttp>=3.9.0
+
+# Data processing
+python-dateutil>=2.8.2
+
+# Utilities
+tqdm>=4.66.0

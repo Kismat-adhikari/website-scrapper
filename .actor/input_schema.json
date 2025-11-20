@@ -1,0 +1,129 @@
+{
+  "title": "Website & Email Scraper Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "urls": {
+      "title": "URLs to Scrape",
+      "type": "array",
+      "description": "List of website URLs to scrape. Can be homepages or specific pages.",
+      "editor": "requestListSources",
+      "example": [
+        "https://example.com",
+        "https://another-site.com"
+      ],
+      "prefill": [
+        "https://example.com"
+      ]
+    },
+    "maxConcurrency": {
+      "title": "Max Concurrency",
+      "type": "integer",
+      "description": "Maximum number of pages to scrape concurrently. Higher = faster but more resource intensive.",
+      "default": 10,
+      "minimum": 1,
+      "maximum": 50,
+      "unit": "pages"
+    },
+    "depth": {
+      "title": "Crawl Depth",
+      "type": "integer",
+      "description": "How deep to crawl internal links. 0 = homepage only, 1 = homepage + direct links, 2 = homepage + 2 levels of links.",
+      "default": 2,
+      "minimum": 0,
+      "maximum": 3
+    },
+    "autoDiscoverPages": {
+      "title": "Auto-Discover Contact Pages",
+      "type": "boolean",
+      "description": "Automatically find and scrape contact, about, support, team, and other relevant pages.",
+      "default": true
+    },
+    "targetPages": {
+      "title": "Target Pages to Find",
+      "type": "array",
+      "description": "Specific page types to automatically discover and scrape.",
+      "editor": "stringList",
+      "default": ["contact", "about", "support", "team", "help"],
+      "prefill": ["contact", "about", "support", "team", "help"]
+    },
+    "retryAttempts": {
+      "title": "Retry Attempts",
+      "type": "integer",
+      "description": "Number of times to retry failed requests.",
+      "default": 3,
+      "minimum": 0,
+      "maximum": 5
+    },
+    "timeout": {
+      "title": "Page Timeout",
+      "type": "integer",
+      "description": "Maximum time to wait for a page to load (in seconds).",
+      "default": 30,
+      "minimum": 10,
+      "maximum": 120,
+      "unit": "seconds"
+    },
+    "useProxy": {
+      "title": "Use Proxy",
+      "type": "boolean",
+      "description": "Use Apify proxy servers to avoid blocks and rate limiting.",
+      "default": false
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "type": "object",
+      "description": "Apify Proxy configuration. Leave empty to use default.",
+      "editor": "proxy",
+      "sectionCaption": "Advanced Options",
+      "sectionDescription": "Configure proxy settings for better reliability"
+    },
+    "extractEmails": {
+      "title": "Extract Emails",
+      "type": "boolean",
+      "description": "Extract email addresses from pages.",
+      "default": true,
+      "sectionCaption": "Data Extraction Options"
+    },
+    "extractPhones": {
+      "title": "Extract Phone Numbers",
+      "type": "boolean",
+      "description": "Extract phone numbers (US and international formats).",
+      "default": true
+    },
+    "extractAddresses": {
+      "title": "Extract Addresses",
+      "type": "boolean",
+      "description": "Extract physical addresses.",
+      "default": true
+    },
+    "extractSocials": {
+      "title": "Extract Social Media Links",
+      "type": "boolean",
+      "description": "Extract social media profile links (Facebook, Instagram, LinkedIn, etc.).",
+      "default": true
+    },
+    "extractMetadata": {
+      "title": "Extract Metadata",
+      "type": "boolean",
+      "description": "Extract page title, description, and other metadata.",
+      "default": true
+    },
+    "verificationEnabled": {
+      "title": "Enable Verification",
+      "type": "boolean",
+      "description": "Track and verify that all pages and data sources were checked. Adds confidence scores to results.",
+      "default": true,
+      "sectionCaption": "Verification & Quality"
+    },
+    "minConfidenceScore": {
+      "title": "Minimum Confidence Score",
+      "type": "number",
+      "description": "Only include results with confidence score above this threshold (0.0 to 1.0).",
+      "default": 0.0,
+      "minimum": 0.0,
+      "maximum": 1.0
+    }
+  },
+  "required": ["urls"]
+}
